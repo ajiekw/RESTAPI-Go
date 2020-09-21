@@ -50,11 +50,11 @@ func main() {
 	designs = append(designs, Design{ID: "1", Name: "The Fool", Category: "Painting", Creator: &Creator{Firstname: "John", Lastname: "Doe"}})
 	designs = append(designs, Design{ID: "2", Name: "Dog Playing Poker", Category: "Painting", Creator: &Creator{Firstname: "Will", Lastname: "Smith"}})
 
-	r.HandleFunc("/api/books", getDesigns).Methods("GET")
-	r.HandleFunc("/api/book/{id}", getDesign).Methods("GET")
-	r.HandleFunc("/api/books", createDesign).Methods("POST")
-	r.HandleFunc("/api/book/{id}", updateDesign).Methods("PUT")
-	r.HandleFunc("/api/book/{id}", deleteDesign).Methods("DELETE")
+	r.HandleFunc("/api/designs", getDesigns).Methods("GET")
+	r.HandleFunc("/api/design/{id}", getDesign).Methods("GET")
+	r.HandleFunc("/api/designs", createDesign).Methods("POST")
+	r.HandleFunc("/api/design/{id}", updateDesign).Methods("PUT")
+	r.HandleFunc("/api/design/{id}", deleteDesign).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8080", r))
 }
