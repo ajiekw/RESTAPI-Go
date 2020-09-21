@@ -3,7 +3,9 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -26,22 +28,58 @@ var designs []Design
 func getDesigns(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(designs)
+
 }
 
 func getDesign(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
 
+	for _, item := range designs {
+		if item.ID == params["id"] {
+			json.NewEncoder(w).Encode(item)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode(&Design{})
 }
 
 func createDesign(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	var design Design
+	_ = json.NewDecoder(r.Body).Decode(&design)
+	design.ID = strconv.Itoa(rand.Intn(10000000))
+	designs = append(designs, design)
+	json.NewEncoder(w).Encode(design)
 }
 
 func updateDesign(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	for index, item := range designs {
+		if item.ID == params["id"] {
+			designs = append(designs[:index], designs[index+1:]...)
+			var design Design
+			_ = json.NewDecoder(r.Body).Decode(&design)
+			design.ID = params["id"]
+			designs = append(designs, design)
+			json.NewEncoder(w).Encode(design)
+			return
+		}
+	}
+	json.NewEncoder(w).Encode(designs)
 }
 
 func deleteDesign(w http.ResponseWriter, r *http.Request) {
-
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	for index, item := range designs {
+		if item.ID == params["id"] {
+			designs = append(designs[:index], designs[index+1:]...)
+			break
+		}
+	}
+	json.NewEncoder(w).Encode(designs)
 }
 
 func main() {
